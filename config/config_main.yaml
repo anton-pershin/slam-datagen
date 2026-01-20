@@ -1,0 +1,42 @@
+defaults:
+  - _self_
+  - user_settings: user_settings
+  - hydra: base
+
+project_path: ${user_settings.project_path}
+result_dir: ${user_settings.result_dir}
+hydra_root: ${user_settings.hydra_root}
+hydra_dir: ${user_settings.hydra_dir}
+
+# Merge-quality dataset configuration
+random_seed: 1337
+
+# Number of personas to include in the dataset
+dataset_size: 100
+
+# Chunk formats to emit for each persona
+chunk_formats:
+  - json
+  - xml
+  - markdown
+
+# Number of distractor chunks to generate per non-markdown format
+distractor_chunks_per_format: 2
+
+# Markdown chunk controls
+markdown_distractor_rows: 3
+markdown_chunks_per_person: 1
+markdown_target_row_probability: 0.5
+
+# Range of attribute fields (flattened) to keep in ground truth
+# Example keeps between 25 and 60 fields per persona
+ground_truth_field_range:
+  - 25
+  - 60
+
+# Output path for the generated dataset
+output_file: ${result_dir}/merge_quality_dataset.jsonl
+
+# Number of samples to preview in stdout
+preview_samples: 1
+

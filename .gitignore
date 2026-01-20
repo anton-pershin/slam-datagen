@@ -1,0 +1,13 @@
+# python
+__pycache__/
+
+# vim
+*.swp
+*.swo
+
+# aider
+.aider.*
+run_aider.sh
+
+# hydra
+hydra/
