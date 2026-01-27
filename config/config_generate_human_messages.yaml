@@ -1,0 +1,31 @@
+defaults:
+  - _self_
+  - user_settings: user_settings
+  - hydra: base
+  - llm: local
+  - human_message_prompts: ru
+
+project_path: ${user_settings.project_path}
+result_dir: ${user_settings.result_dir}
+hydra_root: ${user_settings.hydra_root}
+hydra_dir: ${user_settings.hydra_dir}
+
+random_seed: 1337
+
+# Total number of messages to generate
+dataset_size: 100
+
+# Fraction of messages that should be random alphanumeric sequences.
+random_fraction: 0.2
+
+# Inclusive length range for random alphanumeric sequences
+random_length_range: [30, 50]
+
+# Number of LLM-crafted messages to request per synthetic call
+synthetic_batch_size: 10
+
+# Output path for the generated dataset
+output_file: ${result_dir}/human_messages_dataset.jsonl
+
+# Number of samples to preview in stdout
+preview_samples: 3

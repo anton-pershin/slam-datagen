@@ -8,7 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">= 3.13"
 dependencies = [
-  "XXX>0.0.0",
+  "hydra-core>=1.3",
+  "faker",
+  "pydantic-ai>=0.0.15",
 ]
 
 [build-system]
