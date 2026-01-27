@@ -11,10 +11,10 @@ from slam_datagen.datasets.merge_quality import (build_merge_quality_dataset,
 from slam_datagen.personal_data import PersonalDataGenerator
 from slam_datagen.utils.common import get_config_path
 
-CONFIG_NAME = "config_main"
+CONFIG_NAME = "config_generate_merge_quality_dataset"
 
 
-def main(cfg: DictConfig) -> None:
+def generate_merge_quality_dataset(cfg: DictConfig) -> None:
     generator = PersonalDataGenerator(seed=cfg.random_seed)
     samples = build_merge_quality_dataset(generator=generator, cfg=cfg)
 
@@ -46,4 +46,4 @@ if __name__ == "__main__":
         config_path=str(get_config_path()),
         config_name=CONFIG_NAME,
         version_base="1.3",
-    )(main)()
+    )(generate_merge_quality_dataset)()

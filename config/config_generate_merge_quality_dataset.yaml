@@ -25,14 +25,14 @@ distractor_chunks_per_format: 2
 
 # Markdown chunk controls
 markdown_distractor_rows: 3
-markdown_chunks_per_person: 1
+markdown_chunks_per_person: 2
 markdown_target_row_probability: 0.5
 
 # Range of attribute fields (flattened) to keep in ground truth
 # Example keeps between 25 and 60 fields per persona
 ground_truth_field_range:
-  - 25
-  - 60
+  - 10
+  - 30
 
 # Output path for the generated dataset
 output_file: ${result_dir}/merge_quality_dataset.jsonl
