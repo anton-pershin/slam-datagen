@@ -2,7 +2,7 @@ defaults:
   - _self_
   - user_settings: user_settings
   - hydra: base
-  - llm: local
+  - llm: caila_gpt_5_nano
   - human_message_prompts: ru
 
 project_path: ${user_settings.project_path}
