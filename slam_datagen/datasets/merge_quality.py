@@ -180,10 +180,14 @@ def _build_markdown_chunks(
     chunks: list[Chunk] = []
 
     target_probability = getattr(cfg, "markdown_target_row_probability", 0.5)
+    must_include_target = bool(target_fields)
+    forced_chunk_idx = rng.randrange(chunk_count) if must_include_target else None
 
-    for _ in range(chunk_count):
+    for idx in range(chunk_count):
         rows: list[ChunkRow] = []
         include_target = bool(target_fields) and rng.random() < target_probability
+        if forced_chunk_idx is not None and idx == forced_chunk_idx:
+            include_target = True
         if include_target:
             rows.append(
                 ChunkRow(
