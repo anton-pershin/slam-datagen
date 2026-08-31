@@ -307,13 +307,7 @@ def _partition_fields(
 
 
 def _build_json_chunk(row: ChunkRow) -> Chunk:
-    nested = _unflatten_attributes(_row_fields_with_identifier(row))
-    payload = {
-        "owner": row.owner_id,
-        "identifier_type": row.identifier_type,
-        "identifier_value": row.identifier_value,
-        "data": nested,
-    }
+    payload = _unflatten_attributes(_row_fields_with_identifier(row))
     return Chunk(
         format="json",
         owner_id=row.owner_id,

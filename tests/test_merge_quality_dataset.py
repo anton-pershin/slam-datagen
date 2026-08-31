@@ -98,7 +98,7 @@ def _exclude_identifier_fields(flat: dict[str, str]) -> dict[str, str]:
 def _extract_chunk_attributes(chunk: Chunk, identifiers: dict[str, str]) -> dict[str, str]:
     if chunk.format == "json":
         payload = json.loads(chunk.content)
-        flat = _flatten_attributes(payload["data"])
+        flat = _flatten_attributes(payload)
         return _exclude_identifier_fields(flat)
     if chunk.format == "xml":
         flat = _flatten_attributes(_xml_record_to_dict(chunk.content))
