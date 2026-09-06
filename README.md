@@ -5,7 +5,7 @@ Data generation library for LLMs and other foundational models
 
 1. Create a virtual environment, e.g.
 ```bash
-conda create -n myenv python=3.12
+conda create -n .slam-datagen-env python=3.12
 conda activate myenv
 ```
 2. Install necessary packages
@@ -27,7 +27,7 @@ python slam_datagen/scripts/XXX.py
 Generates the merge-quality dataset where every line is a persona with ground-truth attributes plus JSON/XML/Markdown chunks that mix the target record with distractors.
 
 ```bash
-conda activate slam
+conda activate .slam-datagen-env
 python slam_datagen/scripts/generate_merge_quality_dataset.py
 ```
 
@@ -63,7 +63,7 @@ python slam_datagen/scripts/generate_merge_quality_dataset.py
 Synthesizes human-like chat snippets plus random alphanumeric strings. Uses configurable LLM prompts and writes `{text, type}` JSONL entries (type is `synthetic` or `random`).
 
 ```bash
-conda activate slam
+conda activate .slam-datagen-env
 python slam_datagen/scripts/generate_human_messages.py
 ```
 
@@ -85,4 +85,36 @@ python slam_datagen/scripts/generate_human_messages.py
 #### Output
 
 - Writes `${result_dir}/human_messages_dataset.jsonl`, each line `{"text": ..., "type": "synthetic"|"random"}`.
+- Prints previews so you can verify both random strings and LLM outputs.
+
+
+### `generate_synthetic_nli_dataset.py`
+
+Synthesizes human-like chat snippets plus random alphanumeric strings. Uses configurable LLM prompts and writes `{text, type}` JSONL entries (type is `synthetic` or `random`).
+
+```bash
+conda activate .slam-datagen-env
+python slam_datagen/scripts/generate_synthetic_nli_dataset.py
+```
+
+#### Configuration
+
+1. Extend `config/user_settings/user_settings.yaml` with `project_path`, `result_dir`, and Hydra paths as shown above.
+   2. Adjust `config/config_generate_synthetic_nli_dataset.yaml`:
+   - `id`: unique example identifier
+   - `premise`: rendered premise text (multiple sentences)
+   - `hypothesis`: rendered hypothesis text (one sentence)
+   - `gold_label`: one of `entailment`, `neutral`, `contradiction`
+   - `split`: `train` or `eval` (optional: `test`)
+   - `hop_difficulty`: integer in `{0,1,2}`
+   - `distractor_difficulty`: integer in `{1,2,3}` (number of irrelevant premise facts)
+   - `background_knowledge`: one of `explicit`, `implicit`
+   - `world_seed`: seed used to generate the hidden world (for reproducibility)
+   - `templates_version`: identifier of the rendering template set
+   - `ood_tag`: optional string describing the split regime (e.g., `iid`, `entity_heldout`, ...)
+
+
+#### Output
+
+- Writes `${result_dir}/synthetic_nli_dataset.jsonl`, each line `{"id": ..., "premise": ..., "hypothesis": ..., "split": ..., "hop_difficulty": ..., "distractor_difficulty": ..., "background_knowledge": ..., "world_seed": ..., "templates_version": ..., "ood_tag": ...}`.
 - Prints previews so you can verify both random strings and LLM outputs.

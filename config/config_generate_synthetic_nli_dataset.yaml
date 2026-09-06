@@ -1,0 +1,38 @@
+random_seed: 11
+
+n_train: 1000
+n_eval: 200
+n_entities: 1000
+
+background_knowledge: explicit # explicit|implicit
+
+hop_difficulty_distribution:
+  - value: 0
+    weight: 50
+  - value: 1
+    weight: 30
+  - value: 2
+    weight: 20
+
+distractor_difficulty_distribution:
+  - value: 1
+    weight: 50
+  - value: 2
+    weight: 30
+  - value: 3
+    weight: 20
+  
+fact_type_distrubution:
+  - value: colors
+    weight: 25
+  - value: locations
+    weight: 25
+  - value: shapes
+    weight: 25
+  - value: animals
+    weight: 25
+
+ood_split_type: IID # IID|entity_heldout|taxonomy_heldout|relation_pattern_heldout
+
+output_file: synthetic_nli_dataset.json
+preview_samples: 1
