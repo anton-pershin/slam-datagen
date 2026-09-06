@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-import sys
-import os
-sys.path.insert(0, '/home/sonnet/projects/slam-datagen')
-
 import json
 from collections import Counter
 

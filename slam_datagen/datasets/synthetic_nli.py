@@ -24,7 +24,7 @@ class DatasetSample:
 
 
 def build_synthetic_nli_dataset(cfg: DictConfig) -> list[DatasetSample]:
-    W = HiddenWord(1)
+    W = HiddenWord(n_entities=cfg.n_entities)
     W.sample_hiden_world()
     samples = []
     
@@ -85,8 +85,9 @@ def _serialize_sample(sample: DatasetSample) -> dict[str, Any]:
     }
 
 class HiddenWord():
-    def __init__(self, templates_version, word_seed=11, ood_tag="iid"):
+    def __init__(self, n_entities, templates_version=0, word_seed=11, ood_tag="iid"):
         self.last_used_id = 0
+        self.n_entities = n_entities
         self.word_seed = word_seed
         self.ood_tag = ood_tag # todo realise different tags
         self.templates_version = templates_version
@@ -126,18 +127,19 @@ class HiddenWord():
             "wolf", "fox", "red panda", "kangaroo", "penguin"
         ]
 
-        # todo: made dynamyc range of types and entities
+        # ? made dynamyc range of types
         types = [f"t{i}" for i in range(1000)]
+        chosen_types = random.sample(types, 500)
  
-        entities = [f"e{i}" for i in range(1000)]
-        chosen_entities = random.sample(entities, 500)
+        entities = [f"e{i}" for i in range(self.n_entities * 2)]
+        chosen_entities = random.sample(entities, self.n_entities)
 
         self.zero_hop_dict = dict()
         self.one_hop_dict = dict()
         self.one_hop_DAG = nx.DiGraph()
         self.two_hop_DAG = nx.DiGraph()
 
-        self.one_hop_DAG.add_nodes_from(random.sample(types, 500))
+        self.one_hop_DAG.add_nodes_from(chosen_types)
         self.two_hop_DAG.add_nodes_from(chosen_entities)
 
         self.add_edges_to_DAG(self.one_hop_DAG, list(self.one_hop_DAG.nodes()))
@@ -152,11 +154,6 @@ class HiddenWord():
                                             leaf_types,
                                             chosen_entities)
 
-        # import matplotlib.pyplot as plt
-        # nx.draw(self.one_hop_DAG)
-        # plt.show()
-        # print(random.choice(list(self.zero_hop_dict.keys())))
-
     def add_true_label_to_all_entities(self, d, labels: List[str], entities: List[str]):
         for entity in entities:
             d[entity] = random.choice(labels)
@@ -168,7 +165,7 @@ class HiddenWord():
                     DAG.add_edge(nodes[i], nodes[j])
 
     def generate_zero_hop_sample(self, distractor_difficulty, split) -> DatasetSample:
-        # print("zero")
+        print("zero")
         gold_label = random.choice(["entailment", "neutral", "contradiction"])
         entity = random.choice(list(self.zero_hop_dict.keys()))
         chosen_entities = {entity}
@@ -206,7 +203,7 @@ class HiddenWord():
         return sample
 
     def generate_one_hop_sample(self, distractor_difficulty, background_knowledge, split) -> DatasetSample:
-        # print("one")
+        print("one")
         gold_label = random.choice(["entailment", "neutral", "contradiction"])
         entity = random.choice(list(self.one_hop_dict.keys()))
         child_type = self.one_hop_dict[entity]
@@ -252,7 +249,7 @@ class HiddenWord():
         return sample
     
     def generate_two_hop_sample(self, distractor_difficulty, background_knowledge, split) -> DatasetSample:
-        # print("two")
+        print("two")
         gold_label = random.choice(["entailment", "neutral", "contradiction"])
         use_taxonomy = random.random() < 0.5
 
@@ -330,7 +327,6 @@ class HiddenWord():
                     if background_knowledge == "explicit":
                         premise.append(f"{leaf_type} is a subtype of {parent_type}")
                         premise.append(f"{parent_type} is a subtype of {grandparent_type}")
-                    # гипотеза о другой сущности
                     other_entity = random.choice(list(self.one_hop_dict.keys()))
                     while other_entity == entity:
                         other_entity = random.choice(list(self.one_hop_dict.keys()))
@@ -369,7 +365,6 @@ class HiddenWord():
                         grandparent_type = random.choice(grandparents)
                         break
                 if entity is not None:
-                    # находим другой лист для противоречия
                     leaf_types = [t for t in self.one_hop_DAG.nodes() if self.one_hop_DAG.in_degree(t) == 0]
                     other_leaf = random.choice([t for t in leaf_types if t != leaf_type])
                     premise = [f"{entity} is a {leaf_type}"]
@@ -398,7 +393,6 @@ class HiddenWord():
                 premise = [f"{a} is left of {b}", f"{b} is left of {c}"]
                 if background_knowledge == "explicit":
                     premise.append("Rule: left_of is transitive and antisymmetric")
-                # Гипотеза, противоречащая выводу a left of c: c left of a
                 hypothesis = f"{c} is left of {a}"
                 chosen_entities = {a, b, c}
 
